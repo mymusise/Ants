@@ -1,6 +1,8 @@
-from gevent import monkey
-import gevent
 from functional import seq
+from gevent import monkey
+from django.db import transaction
+import gevent
+import time
 
 
 monkey.patch_all(socket=True, dns=True, time=True, select=True,
@@ -26,20 +28,22 @@ class BaseMixin(object):
     def obj_filter(self, obj):
         return True
 
-    def run_parser(self, obj):
+    def run(self, obj):
         pass
 
     def multi_update(self, bulk_id):
         objs = self.model.objects.filter(
             **{"%s__in" % self.model_key: bulk_id})
         objs = filter(self.obj_filter, objs)
-        list(map(self.run_parser, objs))
+        list(map(self.run, objs))
 
+    @transaction.atomic
     def multi_run(self, bulk_ids):
         for bulk_id in bulk_ids:
             self.multi_update(bulk_id)
 
     def run_all(self):
+        start_time = time.time()
         ids = self.get_objects_id()
         bulk_ids = seq(ids).grouped(self.container_size)
         bulk_ids = list(map(list, bulk_ids))
@@ -48,3 +52,5 @@ class BaseMixin(object):
         jobs = [gevent.spawn(self.multi_run, id_group)
                 for id_group in bulk_id_group]
         gevent.joinall(jobs)
+        end_time = time.time()
+        print("using %s(s)" % (end_time - start_time))
