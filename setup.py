@@ -12,9 +12,9 @@ def read(fname):
 
 
 def readme():
-    return read("./README.txt")
+    return read("./README.md")
 
-VERSION = "1.0.4"
+VERSION = "0.0.1"
 
 setup(
     name='ants',
