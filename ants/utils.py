@@ -1,4 +1,3 @@
-from functional import seq
 from gevent import monkey
 from django.db import transaction
 import gevent
@@ -9,32 +8,55 @@ monkey.patch_all(socket=True, dns=True, time=True, select=True,
                  thread=False, os=True, ssl=True, httplib=False, aggressive=True)
 
 
+def group_list(_list, is_size=True):
+    def with_size(size):
+        count = int(len(_list) / size) + 1
+        return [_list[i * size:(i + 1) * size] for i in range(count)]
+    def with_count(count):
+        return [_list[i::count] for i in range(count)]
+    return with_size if is_size else with_count
+
+
 class BaseMixin(object):
-    model = ''
-    model_key = ''
+    task_model = ''
+    task_model_key = ''
+    goal_model = ''
+    goal_model_key = ''
+    related_key = ''
     container_size = 1000
-    thread = 2
+    thread = 1
 
-    def start(self):
-        self.run_all()
+    def __init__(self):
+        if not self.related_key:
+            self.related_key = self.task_model_key
 
-    def get_obj(self, _id):
-        return self.model.objects.get(**{self.model_key: _id})
+    @property
+    def done_task(self):
+        if not self.goal_model:
+            return {}
+        ids = self.goal_model.objects.all().values_list(self.related_key)
+        return {"%s__in" % self.related_key: ids}
 
-    def get_objects_id(self):
-        ids = self.model.objects.all().values_list(self.model_key)
-        return seq(ids).map(lambda x: x[0])
+    @property
+    def all_task_obj(self):
+        return self.task_model.objects.all()
 
-    def obj_filter(self, obj):
+    @property
+    def task_ids(self):
+        objs = self.all_task_obj.exclude(**self.done_task)
+        ids = objs.values_list(self.task_model_key)
+        return list(map(lambda x:x[0], ids))
+
+    def task_filter(self, task):
         return True
 
-    def run(self, obj):
+    def run(self, task):
         pass
 
     def multi_update(self, bulk_id):
-        objs = self.model.objects.filter(
-            **{"%s__in" % self.model_key: bulk_id})
-        objs = filter(self.obj_filter, objs)
+        objs = self.task_model.objects.filter(
+            **{"%s__in" % self.task_model_key: bulk_id})
+        objs = filter(self.task_filter, objs)
         list(map(self.run, objs))
 
     @transaction.atomic
@@ -44,13 +66,14 @@ class BaseMixin(object):
 
     def run_all(self):
         start_time = time.time()
-        ids = self.get_objects_id()
-        bulk_ids = seq(ids).grouped(self.container_size)
-        bulk_ids = list(map(list, bulk_ids))
-        bulk_id_group = seq(bulk_ids).grouped(self.thread)
-        bulk_id_group = list(map(list, bulk_id_group))
+        print("start_time")
+        bulk_ids = group_list(self.task_ids)(self.container_size)
+        bulk_id_group = group_list(bulk_ids, False)(self.thread)
         jobs = [gevent.spawn(self.multi_run, id_group)
                 for id_group in bulk_id_group]
         gevent.joinall(jobs)
         end_time = time.time()
         print("using %s(s)" % (end_time - start_time))
+
+    def start(self):
+        self.run_all()
