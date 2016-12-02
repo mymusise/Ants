@@ -16,6 +16,8 @@ def readme():
 
 VERSION = "0.0.1"
 
+requires = ["ants==0.0.1","Django==1.10.4","gevent==1.1.2",]
+
 setup(
     name='ants',
     version=VERSION,
@@ -25,6 +27,7 @@ setup(
     author_email='mymusise1@gmail.com',
     url='https://github.com/mymusise/ants',
     license='MIT',
+    scripts=['bin/ants-tools.py'],
     packages=find_packages(),
     install_requires=[],
     keywords='spider django human',
@@ -43,5 +46,5 @@ setup(
     package_data={
         '': ['.README.md']
     },
-    zip_safe=False,
+    # install_requires=requires,
 )
