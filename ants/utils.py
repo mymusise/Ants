@@ -39,13 +39,16 @@ class BaseMixin(object):
 
     @property
     def all_task_obj(self):
-        return self.task_model.objects.all()
+        return self.task_model.objects.filter(**self.task_obj_filter(()))
 
     @property
     def task_ids(self):
         objs = self.all_task_obj.exclude(**self.done_task)
         ids = objs.values_list(self.task_model_key)
         return list(map(lambda x:x[0], ids))
+
+    def task_obj_filter(self):
+        return {}
 
     def task_filter(self, task):
         return True
@@ -66,7 +69,6 @@ class BaseMixin(object):
 
     def run_all(self):
         start_time = time.time()
-        print("start_time")
         bulk_ids = group_list(self.task_ids)(self.container_size)
         bulk_id_group = group_list(bulk_ids, False)(self.thread)
         jobs = [gevent.spawn(self.multi_run, id_group)
