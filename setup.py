@@ -1,10 +1,7 @@
 import codecs
 import os
 import sys
-try:
-    from setuptools import setup, find_packages
-except:
-    from distutils.core import setup, find_packages
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -16,7 +13,12 @@ def readme():
 
 VERSION = "0.0.1"
 
-requires = ["ants==0.0.1","Django==1.10.4","gevent==1.1.2",]
+CONF_PATH = "ants/conf"
+
+requires = ["ants==0.0.1", "Django==1.10.4", "gevent==1.1.2", "Jinja2==2.8"]
+
+datafiles = [(root, [os.path.join(root, f) for f in files])
+             for root, dirs, files in os.walk(CONF_PATH)]
 
 setup(
     name='ants',
@@ -42,9 +44,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Topic :: Software Development'
     ],
-    include_package_data=True,
-    package_data={
-        '': ['.README.md']
-    },
+    zip_safe=False,
+    data_files=datafiles,
     # install_requires=requires,
 )

@@ -45,7 +45,7 @@ class BaseMixin(object):
     def task_ids(self):
         objs = self.all_task_obj.exclude(**self.done_task)
         ids = objs.values_list(self.task_model_key)
-        return list(map(lambda x:x[0], ids))
+        return list(map(lambda x: x[0], ids))
 
     def task_obj_filter(self):
         return {}

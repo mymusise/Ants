@@ -9,7 +9,8 @@ Requirements
 
 - Python 2.7 +
 - Django 1.10 +
-- Gevent 1.1.2
+- Gevent 1.1.2 
+- Jinja2 2.8
 
 
 Install 
@@ -43,9 +44,9 @@ Then we install the Requirements and start a django project
     cd my_ants
     
 
-In Ants, download and parser is divided. It mean there is two part of Ants, ``spiders`` and ``parsers``
+In Ants, download and parser is divided. It mean there is two part of Ants, ``clawers`` and ``parsers``
 
-	python manage.py startapp spiders
+	python manage.py startapp clawers
     mkdir spider/ants
     touch spider/ants/__init__.py
     python manage.py startapp parsers
@@ -67,7 +68,7 @@ Add apps in your my_ants/settings.py
         'django.contrib.sessions',
         'django.contrib.messages',
         'django.contrib.staticfiles',
-        'spiders', ###
+        'clawers', ###
         'parsers', #  what you need to add
         'ants',    ###
     ]
@@ -76,7 +77,7 @@ Add apps in your my_ants/settings.py
 
 ### 3. Write your first spider ant!
 
-Ants will run ants belong to spiders by run command `python manage.py runspider [spider_name]`
+Ants will run ants belong to clawers by run command `python manage.py runclawer [spider_name]`
 
 Let's add a ant.``spider/ants/first_blood.py``
 
@@ -100,11 +101,11 @@ Let's add a ant.``spider/ants/first_blood.py``
 
 This is a simple spider that can get hot movie from `Douban`.
 Be attention, the `NAME` property is required, which is the unique identification
-for different spiders.
+for different clawers.
 
 Now we can run our first blood to get hot movie!
 
-	python manage.py runspider first_blood
+	python manage.py runclawer first_blood
 
 
 # Enjoy!

@@ -1,17 +1,21 @@
-import os, sys
+import os
+import sys
+import ants
+
 
 def print_help():
     print("help is not complete yeah")
+
 
 def start_project(argv):
     if len(sys.argv) <= 2:
         print("[Error:A project_name is requried]")
         return
     project_name = sys.argv[2]
-    os.system("django-admin startproject %s" % project_name)
-    os.system("cd %s" % project_name)
-    # os.system("python manage.py startapp spiders")
-    # os.system("python manage.py startapp parsers")
+    template_path = "%s/conf/project_template/" % ants.__path__[0]
+    os.system("django-admin startproject --template %s %s" %
+              (template_path, project_name))
+
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
