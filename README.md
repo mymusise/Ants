@@ -3,7 +3,6 @@ Ants
 
 Ants is a clawer framework for perfectionism base on Django， which help people build a clawer faster and easier to make manage.
 
-
 Requirements
 ===
 
@@ -26,7 +25,6 @@ To get the lastest, download this fucking source code and build
     sudo python setup.py install
     
 
-
 Getting started
 ====
 
@@ -40,42 +38,43 @@ Ok, I suggest you work on a virtualenv
 Then we install the Requirements and start a django project
 
 	pip install django gevent ants
-    django-admin startproject my_ants
+    ants-tools  startproject my_ants
     cd my_ants
     
+now you can use ``tree`` command to get the file-tree of your project
 
-In Ants, download and parser is divided. It mean there is two part of Ants, ``clawers`` and ``parsers``
+    ├── manage.py
+    ├── my_ants
+    │   ├── __init__.py
+    │   ├── settings.py
+    │   ├── urls.py
+    │   └── wsgi.py
+    ├── parsers
+    │   ├── admin.py
+    │   ├── ants
+    │   │   └── __init__.py
+    │   ├── apps.py
+    │   ├── __init__.py
+    │   ├── migrations
+    │   │   └── __init__.py
+    │   ├── models.py
+    │   ├── tests.py
+    │   └── views.py
+    └── spiders
+        ├── admin.py
+        ├── ants
+        │   └── __init__.py
+        ├── apps.py
+        ├── __init__.py
+        ├── migrations
+        │   └── __init__.py
+        ├── models.py
+        ├── tests.py
+        └── views.py
 
-	python manage.py startapp clawers
-    mkdir spider/ants
-    touch spider/ants/__init__.py
-    python manage.py startapp parsers
-    mkdir parsers/ants
-    touch parsers/ants/__init__.py
-
-##### ! More sample to do ``ants-tools startproject my_ants`` (not complete yead)
 
 
-### 2. settings.py
-
-Add apps in your my_ants/settings.py
-
-	...
-    INSTALLED_APPS = [
-        'django.contrib.admin',
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.messages',
-        'django.contrib.staticfiles',
-        'clawers', ###
-        'parsers', #  what you need to add
-        'ants',    ###
-    ]
-    ...
-    
-
-### 3. Write your first spider ant!
+### 2. Write your first spider ant!
 
 Ants will run ants belong to clawers by run command `python manage.py runclawer [spider_name]`
 
@@ -86,7 +85,8 @@ Let's add a ant.``spider/ants/first_blood.py``
 
 
     class FirstBloodClawerWhatNameYouWant(BaseMixin):
-        NAME = 'first_blood'
+        NAME = 'first_blood' # must be unique
+        thread = 2 # the number of coroutine, default 1
         url_head = """https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=10&page_start={}"""
         max_page = 4
 
