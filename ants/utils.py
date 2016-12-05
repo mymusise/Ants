@@ -19,9 +19,9 @@ def group_list(_list, is_size=True):
 
 class BaseMixin(object):
     task_model = ''
-    task_model_key = ''
+    task_model_key = 'id'
     goal_model = ''
-    goal_model_key = ''
+    goal_model_key = 'id'
     related_key = ''
     container_size = 1000
     thread = 1

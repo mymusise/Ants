@@ -80,13 +80,11 @@ Ants will run ants belong to clawers by run command `python manage.py runclawer 
 
 Let's add a ant.``spider/ants/first_blood.py``
 
-    from ants.utils import BaseMixin
     import requests
 
 
-    class FirstBloodClawerWhatNameYouWant(BaseMixin):
+    class FirstBloodClawerWhatNameYouWant(object):
         NAME = 'first_blood' # must be unique
-        thread = 2 # the number of coroutine, default 1
         url_head = """https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=10&page_start={}"""
         max_page = 4
 
@@ -105,7 +103,39 @@ for different clawers.
 
 Now we can run our first blood to get hot movie!
 
-	python manage.py runclawer first_blood
+    python manage.py runclawer first_blood
 
+
+# About the repeated URL
+
+Ants provide a way to avoid running a same url again if Ants it crash last time. You just need define two model, source and aim. For example:
+
+In file clawers/models.py 
+
+    class BaseTask(models.Model):
+        source_url = models.CharField(max_length=255)
+
+
+    class MovieHtml(models.Model):
+        task_id = models.IntegerField()
+        html = models.TextField()
+
+We define `BaseTask` to save the base task url we need request, and save the html source in `MovieHtml`. If we get a page by requesting a url from BaseTask, we will save this `BaseTask().id` to `MovieHtml().task_id`. We can redefine the our 'first_blood' ant like this:
+
+    class FirstBloodClawerWhatNameYouWant(Clawer):
+        NAME = 'first_blood' # must be unique
+        thread = 2 # the number of coroutine, default 1
+        task_model = BaseTask
+        goal_model = MovieHtml
+
+        def run(self, task):
+            res = requests.get(task.source_url)
+            MovieHtml.objects.create(task_id=task.id, html=res.text)
+
+Before 'first_blood'.run(), it will get all BaseTask objects and give each of then to run() function. But if one of BaseTask object.ID has in MovieHtml.task_id, this BaseTask object would be given to run function.
+
+# About async
+
+Ants use `gevent` as event pool to make each ant run with async, and you can use `thread` property to decide how many coroutine you want. More infomation from [the fucking source code](https://github.com/mymusise/Ants/blob/master/ants/utils.py#L74)
 
 # Enjoy!
