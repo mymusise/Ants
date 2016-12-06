@@ -106,7 +106,7 @@ Now we can run our first blood to get hot movie!
     python manage.py runclawer first_blood
 
 
-# About the repeated URL
+# About repeating URL
 
 Ants provide a way to avoid running a same url again if Ants it crash last time. You just need define two model, source and aim. For example:
 
