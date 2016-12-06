@@ -122,6 +122,9 @@ In file clawers/models.py
 
 We define `BaseTask` to save the base task url we need request, and save the html source in `MovieHtml`. If we get a page by requesting a url from BaseTask, we will save this `BaseTask().id` to `MovieHtml().task_id`. We can redefine the our 'first_blood' ant like this:
 
+    from ants.clawer import Clawer
+    import requests
+
     class FirstBloodClawerWhatNameYouWant(Clawer):
         NAME = 'first_blood' # must be unique
         thread = 2 # the number of coroutine, default 1
