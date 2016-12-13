@@ -39,7 +39,7 @@ class BaseMixin(object):
 
     @property
     def all_task_obj(self):
-        return self.task_model.objects.filter(**self.task_obj_filter(()))
+        return self.task_model.objects.filter(**self.task_obj_filter())
 
     @property
     def task_ids(self):

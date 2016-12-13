@@ -11,7 +11,7 @@ def read(fname):
 def readme():
     return read("./README.md")
 
-VERSION = "0.0.3"
+VERSION = "0.0.5"
 
 CONF_PATH = "ants/conf"
 
@@ -19,6 +19,8 @@ requires = ["ants==0.0.1", "Django==1.10.4", "gevent==1.1.2", "Jinja2==2.8"]
 
 datafiles = [(root, [os.path.join(root, f) for f in files])
              for root, dirs, files in os.walk(CONF_PATH)]
+
+datafiles.append(('./',['README.md']))
 
 setup(
     name='ants',
