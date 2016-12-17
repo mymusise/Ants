@@ -1,6 +1,8 @@
 Ants
 ===
 
+![Build Status](https://travis-ci.org/mymusise/Ants.svg?branch=master)
+
 Ants is a clawer framework for perfectionism base on Django， which help people build a clawer faster and easier to make manage.
 
 Requirements
