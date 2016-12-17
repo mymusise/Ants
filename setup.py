@@ -15,7 +15,7 @@ VERSION = "0.0.5"
 
 CONF_PATH = "ants/conf"
 
-requires = ["ants==0.0.1", "Django==1.10.4", "gevent==1.1.2", "Jinja2==2.8"]
+requires = ["Django>=1.10.2", "gevent>=1.1.1"]
 
 datafiles = [(root, [os.path.join(root, f) for f in files])
              for root, dirs, files in os.walk(CONF_PATH)]
@@ -32,8 +32,7 @@ setup(
     url='https://github.com/mymusise/ants',
     license='MIT',
     scripts=['bin/ants-tools.py'],
-    packages=find_packages(),
-    install_requires=[],
+    packages=find_packages(exclude=['test_settings']),
     keywords='spider django human',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -48,5 +47,5 @@ setup(
     ],
     zip_safe=False,
     data_files=datafiles,
-    # install_requires=requires,
+    install_requires=requires,
 )

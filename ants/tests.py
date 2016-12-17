@@ -1,3 +1,7 @@
 from django.test import TestCase
+from ants.utils import *
 
-# Create your tests here.
+class ScriptTest(TestCase):
+
+    def setUp(self):
+        pass
