@@ -7,9 +7,8 @@ Requirements
 ===
 
 - Python 2.7 +
-- Django 1.10 +
-- Gevent 1.1.2 
-- Jinja2 2.8
+- Django 1.8 +
+- Gevent 1.1.1 +
 
 
 Install 
