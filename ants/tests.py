@@ -11,4 +11,4 @@ class ScriptTest(TestCase):
 class DecoratorTest(TestCase):
 
     def setUp(self):
-        def 
+        pass
