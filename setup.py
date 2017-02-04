@@ -11,7 +11,7 @@ def read(fname):
 def readme():
     return read("./README.md")
 
-VERSION = "0.0.5"
+VERSION = "0.0.6"
 
 CONF_PATH = "ants/conf"
 
