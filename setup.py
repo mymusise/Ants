@@ -11,16 +11,14 @@ def read(fname):
 def readme():
     return read("./README.md")
 
-VERSION = "0.0.6"
+VERSION = "0.0.7"
 
 CONF_PATH = "ants/conf"
 
 requires = ["Django>=1.10.2", "gevent>=1.1.1"]
 
-datafiles = [(root, [os.path.join(root, f) for f in files])
-             for root, dirs, files in os.walk(CONF_PATH)]
-
-datafiles.append(('./',['README.md']))
+EXCLUDE_FROM_PACKAGES = ['test_settings',
+                         'ants.conf']
 
 setup(
     name='ants',
@@ -32,7 +30,8 @@ setup(
     url='https://github.com/mymusise/ants',
     license='MIT',
     scripts=['bin/ants-tools.py'],
-    packages=find_packages(exclude=['test_settings']),
+    packages=find_packages(exclude=EXCLUDE_FROM_PACKAGES),
+    include_package_data=True,
     keywords='spider django human',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -46,6 +45,5 @@ setup(
         'Topic :: Software Development'
     ],
     zip_safe=False,
-    data_files=datafiles,
     install_requires=requires,
 )
