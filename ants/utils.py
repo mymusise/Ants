@@ -1,5 +1,5 @@
-from gevent import monkey
 from django.db import transaction
+from gevent import monkey
 import gevent
 import time
 
@@ -15,6 +15,11 @@ def group_list(_list, is_size=True):
     def with_count(count):
         return [_list[i::count] for i in range(count)]
     return with_size if is_size else with_count
+
+
+class ClassManager(object):
+
+    def find_fil
 
 
 class BaseMixin(object):
@@ -83,6 +88,7 @@ class BaseMixin(object):
 
 class RuleManager(object):
     rules = []
+    path = ['parsers/ants/', 'clawers/ants/']
 
     def exec_rule(self, rule):
         """
@@ -91,6 +97,14 @@ class RuleManager(object):
         print("running Rule: {0}".format(rule.__name__))
         ant = rule()
         ant.start()
+
+    def find_rule_by_name(self, name):
+        for path in self.path:
+            files = os.listdir(path)
+            for file in files:
+                module_name = (path + file).replace('/', '.')
+                module = import_module(module_name)
+
 
     def start(self):
         list(map(self.exec_rule, self.rules))
