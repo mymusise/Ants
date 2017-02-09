@@ -13,11 +13,11 @@ class BaseAntCommand(BaseCommand):
 
     def handle(self, *args, **options):
         for name in args:
-            cls = get_class_by_path('{}/ants/'.format(self.app_name))
+            cls = get_class_by_path('{}/ants/'.format(self.app_name), name)
             if not cls:
                 continue
             obj = cls()
-            print("runing the clawer in [{}]".format(file_obj.__name__))
+            print("runing the clawer in [{}]".format(cls.__name__))
             try:
                 return obj.start()
             except:

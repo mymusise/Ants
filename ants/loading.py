@@ -2,7 +2,7 @@ from importlib import import_module
 import os
 
 
-def _not_cache_file(file):
+def not_cache_file(file):
     return False if "__pycache" in file or ".pyc" in file else True
 
 
@@ -24,14 +24,16 @@ def is_py_file(extension):
 
 def get_class_by_path(path, NAME):
     files = os.listdir(path)
-    files = filter(not_cache_file, files)
+    files = list(filter(not_cache_file, files))
     for file in files:
         file_name, extension = get_file_name(file)
         if not is_py_file(extension):
             continue
         module_name = (path + file_name).replace('/', '.')
         module = import_module(module_name)
-        return class_by_module_name(module_name, NAME)
+        cls = class_by_module_name(module_name, NAME)
+        if cls:
+            return cls
 
 
 def class_by_module_name(module_name, NAME):
@@ -46,6 +48,5 @@ def _get_class(module, NAME):
         if not hasattr(attr, 'NAME'):
             continue
         value = getattr(attr, 'NAME')
-        if value != NAME:
-            continue
-        return attr
+        if value == NAME:
+            return attr
