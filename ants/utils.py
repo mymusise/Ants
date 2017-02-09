@@ -1,3 +1,5 @@
+from ants.loading import get_class_by_path
+from functools import partial
 from django.db import transaction
 from gevent import monkey
 import gevent
@@ -15,11 +17,6 @@ def group_list(_list, is_size=True):
     def with_count(count):
         return [_list[i::count] for i in range(count)]
     return with_size if is_size else with_count
-
-
-class ClassManager(object):
-
-    def find_fil
 
 
 class BaseMixin(object):
@@ -88,6 +85,7 @@ class BaseMixin(object):
 
 class RuleManager(object):
     rules = []
+    classes = []
     path = ['parsers/ants/', 'clawers/ants/']
 
     def exec_rule(self, rule):
@@ -98,13 +96,10 @@ class RuleManager(object):
         ant = rule()
         ant.start()
 
-    def find_rule_by_name(self, name):
+    def get_class_by_rules(self):
         for path in self.path:
-            files = os.listdir(path)
-            for file in files:
-                module_name = (path + file).replace('/', '.')
-                module = import_module(module_name)
-
+            self.classes = map(partial(get_class_by_path, path), self.rules)
 
     def start(self):
-        list(map(self.exec_rule, self.rules))
+        self.get_class_by_rules()
+        list(map(self.exec_rule, self.classes))
