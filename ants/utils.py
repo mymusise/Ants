@@ -79,3 +79,18 @@ class BaseMixin(object):
 
     def start(self):
         self.run_all()
+
+
+class RuleManager(object):
+    rules = []
+
+    def exec_rule(self, rule):
+        """
+        :rule : the Ant class of rule, which must have a start() function
+        """
+        print("running Rule: {0}".format(rule.__name__))
+        ant = rule()
+        ant.start()
+
+    def start(self):
+        list(map(self.exec_rule, self.rules))
